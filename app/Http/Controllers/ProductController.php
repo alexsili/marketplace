@@ -17,14 +17,30 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (Auth::user()->user_type == 'seller') {
-            $products = Product::where('company_id', Auth::user()->company_id)->get();
-        } else {
-            $products = Product::where('status', 'A')->get();
-        }
-        return view('product.index')->with('products', $products);
+        $products = Product::query()
+            ->where('company_id', Auth::user()->seller->company_id)
+            ->when($request->has('pd'), function ($query) use ($request) {
+                $query->when($request->get('pd') == 'myProducts', function ($q2) use ($request) {
+                    $q2->where('company_id', Auth::user()->seller->company_id);
+                    $q2->where('user_id', Auth::user()->id);
+                });
+            })
+            ->get();
+
+        return view('product.index')
+            ->with('products', $products);
+    }
+
+    public function show($productId)
+    {
+        $product = Product::find($productId);
+
+        abort_if(!$product, 403);
+        abort_if($product->company_id != Auth::user()->seller->company_id, 403);
+
+        return view('product.show')->with('product', $product);
     }
 
     /**
@@ -50,7 +66,7 @@ class ProductController extends Controller
 
         $product              = new Product();
         $product->user_id     = Auth::user()->id;
-        $product->company_id  = Auth::user()->company_id;
+        $product->company_id  = Auth::user()->seller->company->id;
         $product->name        = $request->get('name');
         $product->description = $request->get('description');
         $product->price       = $request->get('price');
@@ -81,9 +97,9 @@ class ProductController extends Controller
     {
         $product = Product::find($productId);
 
-        if (!$product) {
-            return redirect(route('products.index'))->with('error', 'Product not found.');
-        }
+        abort_if(!$product, 403);
+        abort_if($product->company_id != Auth::user()->seller->company_id, 403);
+        abort_if($product->user_id != Auth::user()->seller->user_id, 403);
 
         return view('product.edit')->with('product', $product);
     }
@@ -95,13 +111,9 @@ class ProductController extends Controller
     {
         $product = Product::find($productId);
 
-        if (!$product) {
-            return redirect(route('products.index'))->with('error', 'Product not found.');
-        }
-
-        if (Auth::user()->id != $product->user_id) {
-            return redirect(route('products.index'))->with('error', 'You don\'t have permissions to update this product.');
-        }
+        abort_if(!$product, 403);
+        abort_if($product->company_id != Auth::user()->seller->company_id, 403);
+        abort_if($product->user_id != Auth::user()->seller->user_id, 403);
 
         $this->validate($request, [
             'name'        => 'required|string|max:255',
@@ -112,7 +124,7 @@ class ProductController extends Controller
         ]);
 
         $product->user_id     = Auth::user()->id;
-        $product->company_id  = Auth::user()->company_id;
+        $product->company_id  = Auth::user()->seller->company->id;
         $product->name        = $request->get('name');
         $product->description = $request->get('description');
         $product->price       = $request->get('price');
@@ -144,13 +156,9 @@ class ProductController extends Controller
     {
         $product = Product::find($productId);
 
-        if (!$product) {
-            return redirect(route('products.index'))->with('error', 'Product not found.');
-        }
-
-        if (Auth::user()->id != $product->user_id) {
-            return redirect(route('products.index'))->with('error', 'You don\'t have permissions to delete this product.');
-        }
+        abort_if(!$product, 403);
+        abort_if($product->company_id != Auth::user()->seller->company_id, 403);
+        abort_if($product->user_id != Auth::user()->seller->user_id, 403);
 
         $productImages = Image::where('product_id', $productId)->get();
         if ($productImages) {

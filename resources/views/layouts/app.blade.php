@@ -31,7 +31,7 @@
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-               HOME
+                HOME
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
@@ -40,9 +40,14 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
-                    @if(Auth::user())
+                    @if( Auth::user() &&  Auth::user()->isSeller())
                         <li class="nav-item ms-5">
                             <a class="nav-link" href="{{ route('products.index') }}">{{ __('Products') }}</a>
+                        </li>
+                    @endif
+                    @if( Auth::user() &&  Auth::user()->isClient())
+                        <li class="nav-item ms-5">
+                            <a class="nav-link" href="{{ route('productsToReview') }}">{{ __('Products') }}</a>
                         </li>
                     @endif
                 </ul>

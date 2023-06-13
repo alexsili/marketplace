@@ -12,7 +12,7 @@ class Company extends Model
 
     protected $fillable = ['name', 'cui'];
 
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class);
     }

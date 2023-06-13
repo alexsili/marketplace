@@ -7,7 +7,7 @@
                 <h1 class="h4 mb-2">Edit Product</h1>
             </div>
             <div class="col-6 text-end">
-                <a class="btn btn-secondary" href="{{ route('products.index') }}">
+                <a class="btn btn-secondary" href="{{ url()->previous() }}">
                     Go Back
                 </a>
             </div>
@@ -21,10 +21,8 @@
                         <div class="col-4">
                             <div class="row mb-3">
                                 <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
-
                                 <div class="col-md-8">
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $product->name }}" _required autocomplete="name" autofocus>
-
                                     @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -34,10 +32,8 @@
                             </div>
                             <div class="row mb-3">
                                 <label for="price" class="col-md-4 col-form-label text-md-end">{{ __('Price') }}</label>
-
                                 <div class="col-md-8">
                                     <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ $product->price }}" _required autocomplete="name" autofocus>
-
                                     @error('price')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -81,7 +77,6 @@
                                         <img src="/uploads/images/{{$image->product_id}}/{{$image->file_name}}" alt="{{$image->file_name}}" style="width: 200px; height: 120px">
                                         <br>
                                     @endforeach
-
                                 </div>
                             </div>
                         </div>
@@ -100,21 +95,19 @@
                             </div>
                         </div>
                     </div>
-                    @if(Auth::user()->id == $product->user_id)
-                        <div class="row mt-5">
-                            <div class="col-6">
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#deleteProductModal">
-                                    Delete
-                                </button>
-                            </div>
-                            <div class="col-6 text-end">
-                                <button type="submit" class="btn btn-large btn-primary">
-                                    {{ __('Update Product') }}
-                                </button>
-                            </div>
+                    <div class="row mt-5">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteProductModal">
+                                Delete
+                            </button>
                         </div>
-                    @endif
+                        <div class="col-6 text-end">
+                            <button type="submit" class="btn btn-large btn-primary">
+                                {{ __('Update Product') }}
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

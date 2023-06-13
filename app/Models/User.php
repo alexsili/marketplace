@@ -55,9 +55,24 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function review()
+    public function isSeller()
     {
-        return $this->hasOne(Review::class, 'user_id')->where('status', 'A');
+        return $this->user_type == 'seller';
+    }
+
+    public function isClient()
+    {
+        return $this->user_type == 'client';
+    }
+
+    public function activeReview()
+    {
+        return $this->hasOne(Review::class)->where('status', 'A');
+    }
+
+    public function seller()
+    {
+        return $this->hasOne(SellerUser::class);
     }
 
 }

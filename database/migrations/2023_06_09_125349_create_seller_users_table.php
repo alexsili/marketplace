@@ -10,19 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('seller_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedBigInteger('product_id')->index();
-            $table->tinyInteger('star_rating');
-            $table->text('description');
-            $table->char('status', 1)->default('A')->comment('A-active, I-inactive');
+            $table->unsignedBigInteger('company_id')->index();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');;
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('seller_users');
     }
 };

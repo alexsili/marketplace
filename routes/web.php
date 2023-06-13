@@ -22,8 +22,11 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::get('/product/{id}', [App\Http\Controllers\HomeController::class, 'productShow'])->name('productShow');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class)->middleware('seller');
 
-    Route::get('reviews/create/{productId}', [ReviewController::class, 'create'])->name('createReview');
-    Route::post('reviews/store/{productId}', [ReviewController::class, 'store'])->name('storeReview');
+    Route::group(['middleware' => 'client'], function () {
+        Route::get('products-to-review', [ReviewController::class, 'index'])->name('productsToReview');
+        Route::get('reviews/create/{productId}', [ReviewController::class, 'create'])->name('createReview');
+        Route::post('reviews/store/{productId}', [ReviewController::class, 'store'])->name('storeReview');
+    });
 });

@@ -12,14 +12,17 @@ return new class extends Migration {
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unsignedBigInteger('company_id')->index();
             $table->string('name');
             $table->text('description');
             $table->decimal('price')->unsigned()->nullable();
             $table->char('status', 1)->default('A')->comment('A-active, I-inactive');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');;
         });
     }
 

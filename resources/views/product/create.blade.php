@@ -7,7 +7,7 @@
                 <h1 class="h4 mb-2">Add Product</h1>
             </div>
             <div class="col-6 text-end">
-                <a class="btn btn-secondary" href="{{ route('products.index') }}">
+                <a class="btn btn-secondary" href="{{ url()->previous() }}">
                     Go Back
                 </a>
             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\SellerUser;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -69,24 +70,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-
-        if ($data['user_type'] == 'seller') {
-            $company = Company::where('cui', $data['company_cui'])->first();
-            if ($company == null) {
-                $company   = Company::create([
-                    'name' => $data['company_name'],
-                    'cui'  => $data['company_cui'],
-                ]);
-                $companyId = $company->id;
-            } else {
-                $companyId = $company->id;
-            }
-        } else {
-            $companyId = 0;
-        }
-
         $user = User::create([
-            'company_id' => $companyId,
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
             'user_type'  => $data['user_type'],
@@ -94,8 +78,20 @@ class RegisterController extends Controller
             'password'   => Hash::make($data['password']),
         ]);
 
-        $user->save();
-        return $user;
+        if ($data['user_type'] == 'seller') {
+            $company = Company::where('cui', $data['company_cui'])->first();
+            if ($company == null) {
+                $company = Company::create([
+                    'name' => $data['company_name'],
+                    'cui'  => $data['company_cui'],
+                ]);
+            }
+            SellerUser::create([
+                'user_id'    => $user->id,
+                'company_id' => $company->id
+            ]);
+        }
 
+        return $user;
     }
 }

@@ -32,8 +32,8 @@
                     </div>
                 </div>
                 <div class="pt-5">
-                    <h3 class="mb-5">Ratings({{$ratings->count()}})</h3>
-                    @if ($ratings->count())
+                    <h3 class="mb-5">Reviews({{$reviews->count()}})</h3>
+                    @if ($reviews->count())
                         <table id="datatable" class="table">
                             <thead>
                             <th class="no-sort">Name</th>
@@ -41,17 +41,17 @@
                             <th>Stars Number</th>
                             </thead>
                             <tbody>
-                            @foreach ($ratings as $rating)
+                            @foreach ($reviews as $review)
                                 <tr>
-                                    <td>{{ $rating->user->fullName }}</td>
-                                    <td>{{ $rating->description }}</td>
-                                    <td>{{ $rating->star_rating }}</td>
+                                    <td>{{ $review->user->fullName }}</td>
+                                    <td>{{ $review->description }}</td>
+                                    <td>{{ $review->star_rating }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
                     @else
-                        <p class="text-center mt-4 pt-4">No ratings</p>
+                        <p class="text-center mt-4 pt-4">No reviews</p>
                     @endif
                 </div>
             </div>

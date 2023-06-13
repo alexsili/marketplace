@@ -18,22 +18,13 @@ class Review extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    public function activeProduct()
     {
         return $this->belongsTo(Product::class)->where('status', 'A');
     }
 
-    public static function checkIfUserAddedReview($productId)
+    public static function checkIfUserAddedReview($productId, $userId)
     {
-        $response = false;
-        $reviews = Review::where('product_id', $productId)->get();
-        if ($reviews) {
-            foreach ($reviews as $review) {
-                if (Auth::user()->id == $review->user_id) {
-                    $response = true;
-                }
-            }
-        }
-        return  $response;
+        return Review::where('product_id', $productId)->where('user_id', $userId)->first();
     }
 }

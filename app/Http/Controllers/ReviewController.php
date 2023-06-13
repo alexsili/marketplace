@@ -15,6 +15,13 @@ class ReviewController extends Controller
         $this->middleware('auth');
     }
 
+    public function index()
+    {
+        $products = Product::where('status', 'A')->get();
+
+        return view('review.index')->with('products', $products);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -22,7 +29,11 @@ class ReviewController extends Controller
     {
         $product = Product::find($productId);
 
-        return view('review.create')->with('product', $product);
+        $review = Review::where('product_id', $productId)->where('user_id', Auth::user()->id)->first();
+
+        return view('review.create')
+            ->with('review', $review)
+            ->with('product', $product);
     }
 
     /**
@@ -30,15 +41,11 @@ class ReviewController extends Controller
      */
     public function store(Request $request, $productId)
     {
-
-        if (Review::checkIfUserAddedReview($productId)) {
-            return redirect(route('products.index'));
-        }
+        abort_if(Review::checkIfUserAddedReview($productId, Auth::user()->id), 403);
 
         $this->validate($request, [
             'rating'      => 'required|integer|min:1|max:5',
             'description' => 'required|min:3|max:1000',
-            'status'      => 'required|max:1',
         ]);
 
         $review              = new Review();
@@ -46,10 +53,10 @@ class ReviewController extends Controller
         $review->product_id  = $productId;
         $review->star_rating = $request->get('rating');
         $review->description = $request->get('description');
-        $review->status      = $request->get('status');
+        $review->status      = 'A';
         $review->save();
 
-        return redirect(route('products.index'))->with('success', 'Review added successfully.');
+        return redirect(route('productsToReview'))->with('success', 'Review added successfully.');
     }
 
 }

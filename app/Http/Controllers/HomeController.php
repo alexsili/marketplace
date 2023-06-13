@@ -15,23 +15,21 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = Product::whereHas('reviews')->where('status', 'A')->get();
+        $products = Product::whereHas('activeReviews')->where('status', 'A')->get();
 
         return view('home')->with('products', $products);
     }
 
     public function productShow($productId)
     {
-        $product = Product::whereHas('reviews')->find($productId);
+        $product = Product::whereHas('activeReviews')->where('status', 'A')->find($productId);
 
-        if (!$product) {
-            return redirect(route('home'));
-        }
+        abort_if(!$product, 403);
 
-        $ratings = Review::where('product_id', $productId)->paginate(10);
+        $reviews = Review::where('product_id', $productId)->where('status', 'A')->paginate(10);
 
         return view('product-show')
             ->with('product', $product)
-            ->with('ratings', $ratings);
+            ->with('reviews', $reviews);
     }
 }

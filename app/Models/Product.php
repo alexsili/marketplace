@@ -27,14 +27,14 @@ class Product extends Model
         return $this->hasMany(Image::class);
     }
 
-    public function reviews()
+    public function activeReviews()
     {
         return $this->hasMany(Review::class)->where('status', 'A');
     }
 
     public function avgReviewRating()
     {
-        return round($this->reviews()->avg('star_rating'), 2);
+        return round($this->activeReviews()->avg('star_rating'), 2);
 
     }
 }
