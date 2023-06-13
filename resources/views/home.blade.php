@@ -23,7 +23,7 @@
                                 <td class="t-bold">
                                     <a href="{{route('productShow',$product->id)}}">{{ $product->name }}</a></td>
                                 <td class="t-bold">{{ $product->company->name }}</td>
-                                <td class="t-bold">{{ $product->avgReviewRating() }}</td>
+                                <td class="t-bold">{{ $product->avgReviewRating()  == 0 ? "" : $product->avgReviewRating()  }}</td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -15,14 +15,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = Product::whereHas('activeReviews')->where('status', 'A')->get();
+        $products = Product::where('status', 'A')->get();
 
         return view('home')->with('products', $products);
     }
 
     public function productShow($productId)
     {
-        $product = Product::whereHas('activeReviews')->where('status', 'A')->find($productId);
+        $product = Product::where('status', 'A')->find($productId);
 
         abort_if(!$product, 403);
 
